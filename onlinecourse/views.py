@@ -25,32 +25,30 @@ def show_exam_result(request, submission_id):
     course = enrollment.course
 
     selected_choices = submission.choices.all()
+    selected_ids = [choice.id for choice in selected_choices]
 
-    total_score = 0
-    user_score = 0
+    grade = 0
+    possible = 0
 
     for question in Question.objects.filter(course=course):
-        total_score += question.grade
+        possible += question.grade
 
-        correct_choices = set(question.choice_set.filter(is_correct=True))
-        selected = set(selected_choices.filter(question=question))
+        correct_choices = question.choice_set.filter(is_correct=True)
+        correct_ids = [choice.id for choice in correct_choices]
 
-        if correct_choices == selected:
-            user_score += question.grade
+        selected_for_question = [
+            choice.id for choice in selected_choices if choice.question == question
+        ]
 
-    percentage = 0
-    if total_score > 0:
-        percentage = (user_score / total_score) * 100
-
-    passed = percentage >= 50
+        if set(correct_ids) == set(selected_for_question):
+            grade += question.grade
 
     context = {
         'course': course,
-        'score': user_score,
-        'total': total_score,
-        'percentage': percentage,
-        'passed': passed,
-        'submission': submission
+        'submission': submission,
+        'selected_ids': selected_ids,
+        'grade': grade,
+        'possible': possible
     }
 
-    return render(request, 'onlinecourse/exam_result.html', context)
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
