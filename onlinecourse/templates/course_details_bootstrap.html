@@ -2,15 +2,13 @@
 {% block content %}
 
 <div class="container mt-4">
-    <h2 class="mb-3">{{ course.name }}</h2>
+    <h2>{{ course.name }}</h2>
     <p>{{ course.description }}</p>
 
-    <h4 class="mt-4">Lessons</h4>
+    <h4>Lessons</h4>
     <ul class="list-group mb-4">
         {% for lesson in course.lesson_set.all %}
-            <li class="list-group-item">
-                {{ lesson.title }}
-            </li>
+            <li class="list-group-item">{{ lesson.title }}</li>
         {% endfor %}
     </ul>
 
@@ -26,13 +24,10 @@
 
                     {% for choice in question.choice_set.all %}
                         <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
+                            <input type="checkbox"
                                    name="choice{{ choice.id }}"
                                    value="{{ choice.id }}">
-                            <label class="form-check-label">
-                                {{ choice.choice_text }}
-                            </label>
+                            {{ choice.choice_text }}
                         </div>
                     {% endfor %}
                 </div>
